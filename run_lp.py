@@ -6,9 +6,23 @@ from src.data_loader import load_network
 from src.reporting import write_flows_csv, write_lp_iterations, write_solution_csv
 from src.lp_villasana import solve_lp_villasana
 
+from dotenv import load_dotenv
+import os
+
+ENV_PATH = Path(__file__).resolve().parents[1] / "data" / "base_data.env"
+load_dotenv(ENV_PATH)
+
+BASE_MVA = os.getenv("BASE_MVA")
+REFERENCE_BUS= os.getenv("REFERENCE_BUS")
+kwargs = {}
+if BASE_MVA and BASE_MVA.strip():
+    kwargs["base_mva"] = float(BASE_MVA)
+
+if REFERENCE_BUS and REFERENCE_BUS.strip():
+    kwargs["reference_bus"] = int(REFERENCE_BUS)
 
 def main() -> int:
-    network = load_network(Path(__file__).parent / "data")
+    network = load_network(Path(__file__).parent / "data", **kwargs)
     result = solve_lp_villasana(network)
     results_dir = Path(__file__).parent / "results"
     write_lp_iterations(results_dir / "lp_iterations.csv", result.iterations, network)

@@ -88,6 +88,7 @@ class NetworkData:
 
 
 def _read_csv(path: Path, required_columns: Iterable[str]) -> list[dict[str, str]]:
+    
     if not path.is_file():
         raise FileNotFoundError(f"Required data file does not exist: {path}")
     with path.open("r", encoding="utf-8", newline="") as stream:

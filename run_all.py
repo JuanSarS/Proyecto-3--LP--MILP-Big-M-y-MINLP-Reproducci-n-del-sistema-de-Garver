@@ -8,11 +8,24 @@ from src.milp_bigm import solve_milp
 from src.minlp import solve_minlp
 from src.reporting import write_comparison
 from src.validation import compare_expansions
+from dotenv import load_dotenv
+import os
+ENV_PATH = Path(__file__).resolve().parents[1] / "data" / "base_data.env"
+load_dotenv(ENV_PATH)
+
+BASE_MVA = os.getenv("BASE_MVA")
+REFERENCE_BUS= os.getenv("REFERENCE_BUS")
+kwargs = {}
+if BASE_MVA and BASE_MVA.strip():
+    kwargs["base_mva"] = float(BASE_MVA)
+
+if REFERENCE_BUS and REFERENCE_BUS.strip():
+    kwargs["reference_bus"] = int(REFERENCE_BUS)
 
 
 def main() -> int:
     root = Path(__file__).parent
-    network = load_network(root / "data")
+    network = load_network(root / "data", **kwargs)
     print("=" * 60)
     print("TRANSMISSION EXPANSION PLANNING - GARVER 6 BUS")
     print("=" * 60)
